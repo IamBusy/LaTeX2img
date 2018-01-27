@@ -16,6 +16,7 @@ import argparse
 import requests
 import hashlib
 import time
+import uuid
 from storage import driver
 
 
@@ -31,12 +32,11 @@ def process_tag(tag_str):
     storage = driver.resolve()
     remote_img = 'http://latex.codecogs.com/gif.latex?%s' % func
     r = requests.get(remote_img)
-    local_img = '/Users/william/Downloads/%d' % time.time()
+    local_img = '/Users/william/Downloads/%d' % uuid.uuid1()
     with open(local_img, 'wb+') as f:
         f.write(r.content)
     url = storage.put(local_img)
     return '![](%s)' % url
-
 
 
 def handle(filename, outfile):
@@ -45,7 +45,6 @@ def handle(filename, outfile):
         last_idx = 0
         matched = False
         res = ""
-        idx1 = -1
         idx2 = -1
         while True:
             idx1 = content.find('$$', last_idx)
@@ -56,7 +55,7 @@ def handle(filename, outfile):
             res += process_tag(content[idx1:idx2+2])
             last_idx = idx2 + 2
         if idx2 >= 0:
-            res += content[idx2:]
+            res += content[idx2 + 2:]
         out = open(outfile, 'a+')
         out.write(res)
         out.close()
