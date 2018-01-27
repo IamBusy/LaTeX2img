@@ -33,7 +33,7 @@ class Qiniu(object):
 
     def put(self, localfile):
         name = os.path.split(localfile)[1]
-        key = self.__prefix + name
+        key = self.__prefix + name + '.gif'
         token = self.__q.upload_token(self.__bucket, key)
         ret, info = put_file(token, key, localfile)
         print(ret, info)
