@@ -1,8 +1,7 @@
-
 [storage]
-use=qiniu
+use="qiniu"
 
 [storage.qiniu]
-access_key=your-access_key
-secret_key=your-secret_key
-bucket=bucket-name
+access_key="your-access_key"
+secret_key="your-secret_key"
+bucket="bucket-name"
