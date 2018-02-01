@@ -61,6 +61,17 @@ def handle(filename, outfile):
         out.close()
 
 
+def generate_outfile(input_file_name, path):
+    i = 0
+    outfile = os.path.join(path, input_file_name)
+    while os.path.exists(outfile):
+        outfile = os.path.join(output, "%s_%d.md" % (input_file_name[:-3], i))
+        i += 1
+        if i > 99:
+            raise Exception('Can\'t find a unique name for [%s]' % input_file_name)
+    return outfile
+
+
 if __name__ == '__main__':
     args = parser.parse_args()
     storage = driver.resolve()
@@ -72,8 +83,8 @@ if __name__ == '__main__':
         output = input if not is_file else os.path.split(input)[0]
 
     if is_file:
-        # TODO process one file
-        pass
+        outfile = generate_outfile(os.path.split(input)[1], output)
+        handle(input, outfile)
 
     else:
         for parent, dirs, files in os.walk(input):
@@ -81,13 +92,7 @@ if __name__ == '__main__':
                 if file[-3:] != '.md':
                     continue
                 full_path = os.path.join(parent, file)
-                outfile = os.path.join(output, file)
-                i = 0
-                while os.path.exists(outfile):
-                    outfile = os.path.join(output, "%s_%d.md" % (file[:-3], i))
-                    i += 1
-                    if i > 99:
-                        raise Exception('Can\'t find a unique name for [%s]' % file)
+                outfile = generate_outfile(file, output)
                 handle(full_path, outfile)
 
 
